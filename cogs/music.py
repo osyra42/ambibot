@@ -16,7 +16,7 @@ class Music(commands.Cog):
         self.inactivity_timer = None  # Timer for inactivity
 
     @commands.slash_command(name="connect", description="Connect the bot to your voice channel")
-    async def connect(self, inter):
+    async def connect(self, inter: disnake.ApplicationCommandInteraction):
         if inter.author.voice is None:
             await inter.response.send_message("You are not connected to a voice channel.")
             return
@@ -25,7 +25,7 @@ class Music(commands.Cog):
         await inter.response.send_message(f"Connected to {inter.author.voice.channel.name}")
 
     @commands.slash_command(name="select", description="Select a music theme")
-    async def select(self, inter, theme: str):
+    async def select(self, inter: disnake.ApplicationCommandInteraction, theme: str):
         if theme not in self.config.sections():
             await inter.response.send_message(f"Theme '{theme}' not found.")
             return
@@ -34,7 +34,7 @@ class Music(commands.Cog):
         await inter.response.send_message(f"Selected theme: {theme}")
 
     @commands.slash_command(name="start", description="Start playing music from the selected theme or queue")
-    async def start(self, inter):
+    async def start(self, inter: disnake.ApplicationCommandInteraction):
         if self.current_theme is None and not self.queue:
             await inter.response.send_message("No theme selected and queue is empty.")
             return
@@ -61,14 +61,16 @@ class Music(commands.Cog):
         }
 
         try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:  # Changed from youtube_dl to yt_dlp
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(link, download=False)
-                url = info['url']  # Changed from info['formats'][0]['url'] to info['url']
+                url = info['url']
         except Exception as e:
             await inter.response.send_message(f"Error fetching YouTube link: {e}")
             return
 
         self.voice_client.play(disnake.FFmpegPCMAudio(url, options=f"-filter:a 'volume={self.volume}'"))
+        
+        # Send the initial response
         await inter.response.send_message(f"Playing {theme} music")
 
         # Reset inactivity timer
@@ -76,11 +78,11 @@ class Music(commands.Cog):
             self.inactivity_timer.cancel()
         self.inactivity_timer = self.bot.loop.call_later(600, self.disconnect_on_inactivity)
 
-        # Send UI components
+        # Send UI components by editing the original response
         await self.send_ui_components(inter)
 
     @commands.slash_command(name="queue", description="Add a theme to the queue")
-    async def queue(self, inter, theme: str):
+    async def queue(self, inter: disnake.ApplicationCommandInteraction, theme: str):
         if theme not in self.config.sections():
             await inter.response.send_message(f"Theme '{theme}' not found.")
             return
@@ -89,7 +91,7 @@ class Music(commands.Cog):
         await inter.response.send_message(f"Added {theme} to the queue")
 
     @commands.slash_command(name="volume", description="Set the volume")
-    async def volume(self, inter, volume: float):
+    async def volume(self, inter: disnake.ApplicationCommandInteraction, volume: float):
         if volume < 0 or volume > 1:
             await inter.response.send_message("Volume must be between 0 and 1.")
             return
@@ -103,7 +105,7 @@ class Music(commands.Cog):
             self.voice_client = None
             print("Disconnected due to inactivity.")
 
-    async def send_ui_components(self, inter):
+    async def send_ui_components(self, inter: disnake.ApplicationCommandInteraction):
         components = [
             disnake.ui.Button(label="Connect", style=disnake.ButtonStyle.primary, custom_id="connect"),
             disnake.ui.Button(label="Start", style=disnake.ButtonStyle.success, custom_id="start"),
@@ -115,10 +117,11 @@ class Music(commands.Cog):
                 custom_id="select_theme"
             )
         ]
-        await inter.response.send_message("Music Control Panel", components=components)
+        # Edit the original response to include the UI components
+        await inter.edit_original_response(content="Music Control Panel", components=components)
 
     @commands.Cog.listener()
-    async def on_button_click(self, inter):
+    async def on_button_click(self, inter: disnake.MessageInteraction):
         if inter.component.custom_id == "connect":
             await self.connect(inter)
         elif inter.component.custom_id == "start":
@@ -129,12 +132,12 @@ class Music(commands.Cog):
             await self.disconnect(inter)
 
     @commands.Cog.listener()
-    async def on_select(self, inter):
+    async def on_select(self, inter: disnake.MessageInteraction):
         if inter.component.custom_id == "select_theme":
             await self.select(inter, inter.values[0])
 
     @commands.slash_command(name="stop", description="Stop playing music")
-    async def stop(self, inter):
+    async def stop(self, inter: disnake.ApplicationCommandInteraction):
         if self.voice_client is None:
             await inter.response.send_message("Bot is not connected to a voice channel.")
             return
@@ -143,7 +146,7 @@ class Music(commands.Cog):
         await inter.response.send_message("Stopped playing music")
 
     @commands.slash_command(name="disconnect", description="Disconnect the bot from the voice channel")
-    async def disconnect(self, inter):
+    async def disconnect(self, inter: disnake.ApplicationCommandInteraction):
         if self.voice_client is None:
             await inter.response.send_message("Bot is not connected to a voice channel.")
             return
