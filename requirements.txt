@@ -1,2 +1,2 @@
-disnake
+disnake==2.5.2
 youtube-dl
