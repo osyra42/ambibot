@@ -21,6 +21,8 @@ class Music(commands.Cog):
             await inter.response.send_message("You are not connected to a voice channel.")
             return
 
+        if self.voice_client:
+            await self.voice_client.disconnect()
         self.voice_client = await inter.author.voice.channel.connect()
         await inter.response.send_message(f"Connected to {inter.author.voice.channel.name}")
 
