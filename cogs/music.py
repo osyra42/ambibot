@@ -68,9 +68,8 @@ class Music(commands.Cog):
             await inter.response.send_message(f"Error fetching YouTube link: {e}")
             return
 
-        self.voice_client.play(disnake.FFmpegPCMAudio(url, options=f"-filter:a 'volume={self.volume}'"))
-        
-        # Send the initial response
+        if not self.voice_client.is_playing():
+            self.voice_client.play(disnake.FFmpegPCMAudio(url, options=f"-filter:a 'volume={self.volume}'"))
         await inter.response.send_message(f"Playing {theme} music")
 
         # Reset inactivity timer
@@ -78,8 +77,8 @@ class Music(commands.Cog):
             self.inactivity_timer.cancel()
         self.inactivity_timer = self.bot.loop.call_later(600, self.disconnect_on_inactivity)
 
-        # Send UI components by editing the original response
-        await self.send_ui_components(inter)
+        # Send UI components
+        await self.send_ui_components(inter, f"Playing {theme} music")
 
     @commands.slash_command(name="queue", description="Add a theme to the queue")
     async def queue(self, inter: disnake.ApplicationCommandInteraction, theme: str):
@@ -105,7 +104,7 @@ class Music(commands.Cog):
             self.voice_client = None
             print("Disconnected due to inactivity.")
 
-    async def send_ui_components(self, inter: disnake.ApplicationCommandInteraction):
+    async def send_ui_components(self, inter: disnake.ApplicationCommandInteraction, message: str):
         components = [
             disnake.ui.Button(label="Connect", style=disnake.ButtonStyle.primary, custom_id="connect"),
             disnake.ui.Button(label="Start", style=disnake.ButtonStyle.success, custom_id="start"),
