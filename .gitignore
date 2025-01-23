@@ -1,0 +1,7 @@
+venv/
+__pychache__/
+*/__pychache__/
+settings.py
+ffmpeg.exe
+ffplay.exe
+ffprobe.exe
