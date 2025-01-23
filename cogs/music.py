@@ -2,7 +2,7 @@ import disnake
 from disnake.ext import commands
 import configparser
 import random
-import youtube_dl
+import yt_dlp  # Changed from youtube_dl to yt_dlp
 
 class Music(commands.Cog):
     def __init__(self, bot):
@@ -61,9 +61,9 @@ class Music(commands.Cog):
         }
 
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:  # Changed from youtube_dl to yt_dlp
                 info = ydl.extract_info(link, download=False)
-                url = info['formats'][0]['url']
+                url = info['url']  # Changed from info['formats'][0]['url'] to info['url']
         except Exception as e:
             await inter.response.send_message(f"Error fetching YouTube link: {e}")
             return

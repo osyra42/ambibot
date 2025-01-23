@@ -1,6 +1,6 @@
 venv/
-__pychache__/
-*/__pychache__/
+__pycache__/
+*/__pycache__/
 settings.py
 ffmpeg.exe
 ffplay.exe
