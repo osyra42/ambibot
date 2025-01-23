@@ -23,7 +23,14 @@ class Music(commands.Cog):
 
         if self.voice_client:
             await self.voice_client.disconnect()
+        if self.voice_client:
+            await self.voice_client.disconnect()
         self.voice_client = await inter.author.voice.channel.connect()
+        await inter.response.send_message(f"Connected to {inter.author.voice.channel.name}")
+        if self.voice_client:
+            await self.voice_client.disconnect()
+        self.voice_client = await inter.author.voice.channel.connect()
+        await inter.response.send_message(f"Connected to {inter.author.voice.channel.name}")
         await inter.response.send_message(f"Connected to {inter.author.voice.channel.name}")
 
     @commands.slash_command(name="select", description="Select a music theme")
@@ -31,9 +38,11 @@ class Music(commands.Cog):
         if theme not in self.config.sections():
             await inter.response.send_message(f"Theme '{theme}' not found.")
             return
-
+    
         self.current_theme = theme
-        await inter.response.send_message(f"Selected theme: {theme}")
+        links = [self.config[theme][key] for key in self.config[theme]]
+        link = random.choice(links)
+        await inter.response.send_message(f"Selected theme: {theme} and chosen track: {link}")
 
     @commands.slash_command(name="start", description="Start playing music from the selected theme or queue")
     async def start(self, inter: disnake.ApplicationCommandInteraction):
