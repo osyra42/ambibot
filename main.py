@@ -41,7 +41,7 @@ async def on_ready():
     owner = app_info.owner
     print(f'Bot owner: {owner.name} (ID: {owner.id})')
     
-    print('------')
+    print('==================================================')
 
 # Run bot
 if __name__ == "__main__":

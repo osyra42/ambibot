@@ -8,6 +8,7 @@ del check_updates.txt
 
 :: Only run updates if settings.check_for_updates is True
 if "!CHECK_FOR_UPDATES!"=="True" (
+    echo ==================================================
     echo Checking for updates...
     set REPO_URL=https://github.com/osyra42/ambibot.git
     set REPO_DIR=./
@@ -33,4 +34,5 @@ if "!CHECK_FOR_UPDATES!"=="True" (
 )
 
 echo Done checking updates.
+echo ==================================================
 exit /b
