@@ -7,18 +7,6 @@ cd /d "%~dp0"
 REM Run check_for_updates.bat (it will handle the config check internally)
 call "%~dp0check_for_updates.bat"
 
-set "music_dir=music"
-
-REM Delete the music directory if it exists
-if exist "%music_dir%" (
-    echo Deleting all files and subdirectories in %music_dir%...
-    del /q /s "%music_dir%\*" >nul
-    rmdir /s /q "%music_dir%"
-    echo Done.
-) else (
-    echo Directory %music_dir% does not exist.
-)
-
 REM Display ASCII art
 if exist "ascii.txt" (
     type "ascii.txt"
