@@ -1,0 +1,1 @@
+# use /consent to get a document and the user needs to sign it with "i agree" button and then save it to the database, if a user doesn't agree then the users voice is not recorded
