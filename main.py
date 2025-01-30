@@ -30,9 +30,12 @@ try:
 except Exception as e:
     print(f"Failed to load 'cogs.consent': {e}")
 
+print("==================================================")
+
 # Event: Bot is ready
 @bot.event
 async def on_ready():
+    print("==================================================")
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print("Bot is ready and slash commands are registered.")
     
