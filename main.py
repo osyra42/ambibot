@@ -24,6 +24,12 @@ try:
 except Exception as e:
     print(f"Failed to load 'cogs.music': {e}")
 
+try:
+    bot.load_extension('cogs.consent')  # Load the consent cog
+    print("Successfully loaded 'cogs.consent'")
+except Exception as e:
+    print(f"Failed to load 'cogs.consent': {e}")
+
 # Event: Bot is ready
 @bot.event
 async def on_ready():

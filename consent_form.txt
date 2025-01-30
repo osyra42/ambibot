@@ -1,0 +1,12 @@
+Consent Form
+
+By using this service, you agree to the following terms:
+
+1. You consent to the collection and use of your data for the purpose of providing the service.
+2. You understand that your data may be shared with third-party services for the purpose of improving the service.
+3. You agree to the terms of service and privacy policy of this service.
+4. You understand that your voice may be recorded for the purpose of providing the service.
+
+Please confirm your consent by replying with "I consent" to this message.
+
+Thank you for using our service!
