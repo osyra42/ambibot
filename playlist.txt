@@ -1,6 +1,3 @@
-[Soundeffects]
-
-
 # this is a comment and is ignored
 
 [Battle]

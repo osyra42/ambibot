@@ -4,6 +4,9 @@ title Ambibot
 REM Change to the directory where the batch file is located
 cd /d "%~dp0"
 
+REM Run check_for_updates.bat (it will handle the config check internally)
+call "%~dp0check_for_updates.bat"
+
 set "music_dir=music"
 
 REM Delete the music directory if it exists
