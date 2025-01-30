@@ -46,9 +46,13 @@ class Music(commands.Cog):
         """
         Displays buttons for each section in the playlist.
         """
-        # Create buttons for each section
+        # Create buttons for each section with custom IDs prefixed with "music_"
         buttons = [
-            disnake.ui.Button(label=section, style=disnake.ButtonStyle.primary, custom_id=section)
+            disnake.ui.Button(
+                label=section,
+                style=disnake.ButtonStyle.primary,
+                custom_id=f"music_{section}"  # Add a prefix to distinguish music buttons
+            )
             for section in self.playlist.keys()
         ]
 
@@ -59,23 +63,40 @@ class Music(commands.Cog):
         )
 
     @commands.Cog.listener()
-    async def on_button_click(self, inter: disnake.MessageInteraction):
-        """
-        Handles button clicks to play a random song from the selected section.
-        """
-        # Get the section from the button's custom_id
-        section = inter.component.custom_id
+    async def on_button_click(self, inter: disnake.Interaction):
+        # Check if the button is a music button (custom ID starts with "music_")
+        if not inter.component.custom_id or not inter.component.custom_id.startswith("music_"):
+            return  # Ignore buttons that aren't music-related
+
+        # Get the member object from the guild
+        if not inter.guild:
+            await inter.response.send_message("This command can only be used in a server.", ephemeral=True)
+            return
+
+        member = inter.guild.get_member(inter.user.id)
+        if not member or not member.voice:
+            await inter.response.send_message(
+                "You need to be in a voice channel to use this!",
+                ephemeral=True
+            )
+            return
+
+        # Now you can safely access voice state
+        voice_channel = member.voice.channel
+
+        # Get the section from the button's custom_id (remove the "music_" prefix)
+        section = inter.component.custom_id[len("music_"):]
 
         # Check if the bot is connected to a voice channel
-        if inter.author.voice is None:
+        if not member.voice:
             await inter.response.send_message("You are not connected to a voice channel.")
             return
 
         # Connect to the voice channel if not already connected
         if not self.voice_client:
-            self.voice_client = await inter.author.voice.channel.connect()
-        elif self.voice_client.channel != inter.author.voice.channel:
-            await self.voice_client.move_to(inter.author.voice.channel)
+            self.voice_client = await member.voice.channel.connect()
+        elif self.voice_client.channel != member.voice.channel:
+            await self.voice_client.move_to(member.voice.channel)
 
         # Get a random song from the selected section
         songs = self.playlist[section]

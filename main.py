@@ -35,6 +35,12 @@ except Exception as e:
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print("Bot is ready and slash commands are registered.")
+    
+    # Fetch the bot owner's information
+    app_info = await bot.application_info()
+    owner = app_info.owner
+    print(f'Bot owner: {owner.name} (ID: {owner.id})')
+    
     print('------')
 
 # Run bot
