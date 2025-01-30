@@ -1,18 +1,21 @@
 import disnake
 from disnake.ext import commands
-import settings
-import yaml
+import configparser
 
-# Load themes from YAML file
-with open('themes.yaml', 'r') as file:
-    themes = yaml.safe_load(file)
+# Load secrets from INI file
+config = configparser.ConfigParser()
+config.read('secrets.ini')
+
+# Get the bot token and guild IDs from the config
+BOT_TOKEN = config['bot']['BOT_TOKEN']  # Access the 'bot' section
+GUILD_IDS = [int(guild_id) for guild_id in config['bot']['GUILD_IDS'].split(',')]  # Access the 'bot' section
 
 # Initialize bot with InteractionBot for slash commands
 intents = disnake.Intents.default()
 intents.message_content = True  # Enable message content intent
 intents.voice_states = True  # Enable voice state intents for voice functionality
 
-bot = commands.InteractionBot(intents=intents, test_guilds=settings.GUILD_IDS)
+bot = commands.InteractionBot(intents=intents, test_guilds=GUILD_IDS)
 
 # Load cogs
 try:
@@ -30,4 +33,4 @@ async def on_ready():
 
 # Run bot
 if __name__ == "__main__":
-    bot.run(settings.YOUR_BOT_TOKEN)
+    bot.run(BOT_TOKEN)

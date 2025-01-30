@@ -1,0 +1,27 @@
+[Soundeffects]
+
+
+# this is a comment and is ignored
+
+[Battle]
+https://www.youtube.com/watch?v=OOBLHj8OQEc  ; Epic D&D Music for Battles
+https://www.youtube.com/watch?v=JdAwIaP5Jbg  ; D&D Inspired Adventure Ambient Music
+
+[Calm]
+https://www.youtube.com/watch?v=0mtC-RL1myM  ; Relaxing Ambient Music for Calm Moments
+https://www.youtube.com/watch?v=yH6X3gtHs-w  ; Ambient Fantasy Music for Calm Settings
+
+[Adventure]
+https://www.youtube.com/watch?v=IJXEEO8Xxxk  ; D&D Ambient Music for Adventure and Exploration
+https://www.youtube.com/watch?v=Y4vSLXjxImY  ; Sea Adventure Music for D&D/TTRPG
+
+[Exploration]
+https://www.youtube.com/watch?v=sHA_4wfQhE8  ; Calm Fantasy Music for Exploration
+https://www.youtube.com/watch?v=-sNL7bUBAzs  ; Calm Fantasy Music for Adventure and Exploration
+
+[Mystery]
+https://www.youtube.com/watch?v=jgm9A-_g6SA  ; Calm Fantasy Music for Mysterious Settings
+https://www.youtube.com/watch?v=_IovH-cJDYg  ; Deep Underdark Ambience for Mystery
+
+[Horror]
+https://www.youtube.com/watch?v=Z6ylGHfLrdI ; Dark Ambience - Horror Background Music
