@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import configparser
+import os
 
 # Load secrets from INI file
 config = configparser.ConfigParser()
@@ -17,18 +18,18 @@ intents.voice_states = True  # Enable voice state intents for voice functionalit
 
 bot = commands.InteractionBot(intents=intents, test_guilds=GUILD_IDS)
 
-# Load cogs
-try:
-    bot.load_extension('cogs.music')  # Load the music cog
-    print("Successfully loaded 'cogs.music'")
-except Exception as e:
-    print(f"Failed to load 'cogs.music': {e}")
+# Directory containing cogs
+cogs_dir = "cogs"
 
-try:
-    bot.load_extension('cogs.consent')  # Load the consent cog
-    print("Successfully loaded 'cogs.consent'")
-except Exception as e:
-    print(f"Failed to load 'cogs.consent': {e}")
+# Load all .py files in the cogs directory as cogs
+for filename in os.listdir(cogs_dir):
+    if filename.endswith(".py") and not filename.startswith("_"):  # Ignore __init__.py and private files
+        cog_name = f"{cogs_dir}.{filename[:-3]}"  # Remove '.py' and format as 'cogs.filename'
+        try:
+            bot.load_extension(cog_name)  # Load the cog
+            print(f"Successfully loaded '{cog_name}'")
+        except Exception as e:
+            print(f"Failed to load '{cog_name}': {e}")
 
 print("==================================================")
 
