@@ -65,6 +65,14 @@ class LocalSound(commands.Cog):
             )
             return
 
+        # Check if there are members in the voice channel
+        if len(member.voice.channel.members) == 0:
+            await inter.response.send_message(
+                "There are no members in the voice channel.",
+                ephemeral=True
+            )
+            return
+
         # Now you can safely access voice state
         voice_channel = member.voice.channel
 
