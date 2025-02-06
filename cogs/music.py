@@ -72,16 +72,5 @@ class Music(commands.Cog):
         else:
             await inter.response.send_message("No song is currently paused.", ephemeral=True)
 
-    @commands.slash_command(name="disconnect", description="Disconnect the bot from the voice channel")
-    async def disconnect(self, inter: disnake.ApplicationCommandInteraction):
-        """Disconnect the bot from the voice channel."""
-        if self.voice_client:
-            await self.voice_client.disconnect()
-            self.voice_client = None
-            embed = disnake.Embed(title="Disconnected", description="The bot has been disconnected from the voice channel.", color=disnake.Color.red())
-            await inter.response.send_message(embed=embed)
-        else:
-            await inter.response.send_message("The bot is not connected to a voice channel.", ephemeral=True)
-
 def setup(bot):
     bot.add_cog(Music(bot))

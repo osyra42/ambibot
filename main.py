@@ -31,13 +31,6 @@ for filename in os.listdir(cogs_dir):
         except Exception as e:
             print(f"Failed to load '{cog_name}': {e}")
 
-# Load the new music cog
-try:
-    bot.load_extension("cogs.music")
-    print("Successfully loaded 'cogs.music'")
-except Exception as e:
-    print(f"Failed to load 'cogs.music': {e}")
-
 print("==================================================")
 
 # Event: Bot is ready

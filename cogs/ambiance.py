@@ -34,24 +34,24 @@ def parse_playlist(file_path):
 
     return playlist
 
-class Music(commands.Cog):
+class Ambiance(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.playlist = parse_playlist('playlist.txt')  # Load playlist from file
         self.voice_client = None
         self.volume = 0.5  # Default volume
 
-    @commands.slash_command(name="gui", description="Display buttons to play music from different sections")
+    @commands.slash_command(name="gui", description="Display buttons to play ambiance from different sections")
     async def gui(self, inter: disnake.ApplicationCommandInteraction):
         """
         Displays buttons for each section in the playlist.
         """
-        # Create buttons for each section with custom IDs prefixed with "music_"
+        # Create buttons for each section with custom IDs prefixed with "ambiance_"
         buttons = [
             disnake.ui.Button(
                 label=section,
                 style=disnake.ButtonStyle.primary,
-                custom_id=f"music_{section}"  # Add a prefix to distinguish music buttons
+                custom_id=f"ambiance_{section}"  # Add a prefix to distinguish ambiance buttons
             )
             for section in self.playlist.keys()
         ]
@@ -64,9 +64,9 @@ class Music(commands.Cog):
 
     @commands.Cog.listener()
     async def on_button_click(self, inter: disnake.Interaction):
-        # Check if the button is a music button (custom ID starts with "music_")
-        if not inter.component.custom_id or not inter.component.custom_id.startswith("music_"):
-            return  # Ignore buttons that aren't music-related
+        # Check if the button is a ambiance button (custom ID starts with "ambiance_")
+        if not inter.component.custom_id or not inter.component.custom_id.startswith("ambiance_"):
+            return  # Ignore buttons that aren't ambiance-related
 
         # Get the member object from the guild
         if not inter.guild:
@@ -84,8 +84,8 @@ class Music(commands.Cog):
         # Now you can safely access voice state
         voice_channel = member.voice.channel
 
-        # Get the section from the button's custom_id (remove the "music_" prefix)
-        section = inter.component.custom_id[len("music_"):]
+        # Get the section from the button's custom_id (remove the "ambiance_" prefix)
+        section = inter.component.custom_id[len("ambiance_"):]
 
         # Check if the bot is connected to a voice channel
         if not member.voice:
@@ -129,17 +129,5 @@ class Music(commands.Cog):
         # Send a confirmation message
         await inter.response.send_message(f"Now playing a random song from **{section}**: {song['description']}")
 
-    @commands.slash_command(name="disconnect", description="Disconnect the bot from the voice channel")
-    async def disconnect(self, inter: disnake.ApplicationCommandInteraction):
-        """
-        Disconnects the bot from the voice channel.
-        """
-        if self.voice_client:
-            await self.voice_client.disconnect()
-            self.voice_client = None
-            await inter.response.send_message("Disconnected from the voice channel.")
-        else:
-            await inter.response.send_message("The bot is not connected to a voice channel.")
-
 def setup(bot):
-    bot.add_cog(Music(bot))
+    bot.add_cog(Ambiance(bot))
