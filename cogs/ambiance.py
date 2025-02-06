@@ -46,6 +46,9 @@ class Ambiance(commands.Cog):
         """
         Displays buttons for each section in the playlist.
         """
+        # Defer the response
+        await inter.response.defer()
+
         # Create buttons for each section with custom IDs prefixed with "ambiance_"
         buttons = [
             disnake.ui.Button(
@@ -57,8 +60,8 @@ class Ambiance(commands.Cog):
         ]
 
         # Send the buttons as a message
-        await inter.response.send_message(
-            "Choose a section to play a random song:",
+        await inter.edit_original_response(
+            content="Choose a section to play a random song:",
             components=buttons
         )
 
@@ -68,17 +71,17 @@ class Ambiance(commands.Cog):
         if not inter.component.custom_id or not inter.component.custom_id.startswith("ambiance_"):
             return  # Ignore buttons that aren't ambiance-related
 
+        # Defer the response
+        await inter.response.defer()
+
         # Get the member object from the guild
         if not inter.guild:
-            await inter.response.send_message("This command can only be used in a server.", ephemeral=True)
+            await inter.edit_original_response(content="This command can only be used in a server.")
             return
 
         member = inter.guild.get_member(inter.user.id)
         if not member or not member.voice:
-            await inter.response.send_message(
-                "You need to be in a voice channel to use this!",
-                ephemeral=True
-            )
+            await inter.edit_original_response(content="You need to be in a voice channel to use this!")
             return
 
         # Now you can safely access voice state
@@ -89,7 +92,7 @@ class Ambiance(commands.Cog):
 
         # Check if the bot is connected to a voice channel
         if not member.voice:
-            await inter.response.send_message("You are not connected to a voice channel.")
+            await inter.edit_original_response(content="You are not connected to a voice channel.")
             return
 
         # Connect to the voice channel if not already connected
@@ -118,7 +121,7 @@ class Ambiance(commands.Cog):
                 info = ydl.extract_info(url, download=False)
                 audio_url = info['url']
         except Exception as e:
-            await inter.response.send_message(f"Error fetching YouTube link: {e}")
+            await inter.edit_original_response(content=f"Error fetching YouTube link: {e}")
             return
 
         # Play the audio
@@ -127,7 +130,7 @@ class Ambiance(commands.Cog):
         self.voice_client.play(disnake.FFmpegPCMAudio(audio_url, options=f"-filter:a 'volume={self.volume}'"))
 
         # Send a confirmation message
-        await inter.response.send_message(f"Now playing a random song from **{section}**: {song['description']}")
+        await inter.edit_original_response(content=f"Now playing a random song from **{section}**: {song['description']}")
 
 def setup(bot):
     bot.add_cog(Ambiance(bot))

@@ -27,6 +27,9 @@ class LocalSound(commands.Cog):
     @commands.slash_command(name="local", description="Display buttons to play sounds from local files")
     async def local(self, inter: disnake.ApplicationCommandInteraction):
         """Displays buttons for each sound file in the BGM and SFX sections."""
+        # Defer the response
+        await inter.response.defer()
+
         # Create buttons for each sound file in BGM and SFX
         buttons = []
         for section, files in self.sounds.items():
@@ -41,8 +44,8 @@ class LocalSound(commands.Cog):
                 )
 
         # Send the buttons as a message
-        await inter.response.send_message(
-            "Choose a sound to play:",
+        await inter.edit_original_response(
+            content="Choose a sound to play:",
             components=buttons
         )
 
@@ -52,17 +55,22 @@ class LocalSound(commands.Cog):
         if not inter.component.custom_id or not inter.component.custom_id.startswith("sound_"):
             return  # Ignore buttons that aren't sound-related
 
+        # Defer the response
+        await inter.response.defer()
+
         # Get the member object from the guild
         if not inter.guild:
-            await inter.response.send_message("This command can only be used in a server.", ephemeral=True)
+            await inter.edit_original_response(content="This command can only be used in a server.")
             return
 
         member = inter.guild.get_member(inter.user.id)
         if not member or not member.voice:
-            await inter.response.send_message(
-                "You need to be in a voice channel to use this!",
-                ephemeral=True
-            )
+            await inter.edit_original_response(content="You need to be in a voice channel to use this!")
+            return
+
+        # Check if there are members in the voice channel
+        if len(member.voice.channel.members) == 0:
+            await inter.edit_original_response(content="There are no members in the voice channel.")
             return
 
         # Check if there are members in the voice channel
@@ -89,12 +97,12 @@ class LocalSound(commands.Cog):
                 break
 
         if not selected_sound:
-            await inter.response.send_message("Sound not found.", ephemeral=True)
+            await inter.edit_original_response(content="Sound not found.")
             return
 
         # Check if the bot is connected to a voice channel
         if not member.voice:
-            await inter.response.send_message("You are not connected to a voice channel.")
+            await inter.edit_original_response(content="You are not connected to a voice channel.")
             return
 
         # Connect to the voice channel if not already connected
@@ -109,7 +117,7 @@ class LocalSound(commands.Cog):
         self.voice_client.play(disnake.FFmpegPCMAudio(selected_sound['path'], options=f"-filter:a 'volume={self.volume}'"))
 
         # Send a confirmation message
-        await inter.response.send_message(f"Now playing: **{selected_sound['description']}**")
+        await inter.edit_original_response(content=f"Now playing: **{selected_sound['description']}**")
 
 def setup(bot):
     bot.add_cog(LocalSound(bot))

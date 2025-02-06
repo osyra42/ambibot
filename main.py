@@ -18,6 +18,20 @@ intents.voice_states = True  # Enable voice state intents for voice functionalit
 
 bot = commands.InteractionBot(intents=intents, test_guilds=GUILD_IDS)
 
+def check_permissions():
+    def decorator(func):
+        async def wrapper(inter: disnake.ApplicationCommandInteraction, *args, **kwargs):
+            # Check if the user is the owner
+            if inter.user.id != inter.guild.owner_id:
+                await inter.response.send_message("You do not have permission to use this command.", ephemeral=True)
+                return
+            return await func(inter, *args, **kwargs)
+        return wrapper
+    return decorator
+
+# Apply the decorator to all slash commands
+commands.slash_command = check_permissions()(commands.slash_command)
+
 # Directory containing cogs
 cogs_dir = "cogs"
 

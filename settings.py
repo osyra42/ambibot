@@ -7,3 +7,7 @@ dir_to_SFX = "sounds/SFX" # directory to SFX
 permissions = {
     "is_owner": True
 }
+
+permissions = {
+    "is_owner": True
+}
