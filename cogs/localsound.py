@@ -3,9 +3,7 @@ from disnake.ext import commands
 import os
 
 def parse_local_sounds(base_path):
-    """
-    Parses the local sound files from the given base path.
-    """
+    """Parses the local sound files from the given base path."""
     sounds = {}
     for root, dirs, files in os.walk(base_path):
         section = os.path.basename(root)  # Get the folder name (BGM or SFX)
@@ -28,9 +26,7 @@ class LocalSound(commands.Cog):
 
     @commands.slash_command(name="local", description="Display buttons to play sounds from local files")
     async def local(self, inter: disnake.ApplicationCommandInteraction):
-        """
-        Displays buttons for each sound file in the BGM and SFX sections.
-        """
+        """Displays buttons for each sound file in the BGM and SFX sections."""
         # Create buttons for each sound file in BGM and SFX
         buttons = []
         for section, files in self.sounds.items():

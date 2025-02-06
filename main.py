@@ -31,6 +31,13 @@ for filename in os.listdir(cogs_dir):
         except Exception as e:
             print(f"Failed to load '{cog_name}': {e}")
 
+# Load the new music cog
+try:
+    bot.load_extension("cogs.music")
+    print("Successfully loaded 'cogs.music'")
+except Exception as e:
+    print(f"Failed to load 'cogs.music': {e}")
+
 print("==================================================")
 
 # Event: Bot is ready
@@ -39,12 +46,12 @@ async def on_ready():
     print("==================================================")
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print("Bot is ready and slash commands are registered.")
-    
+
     # Fetch the bot owner's information
     app_info = await bot.application_info()
     owner = app_info.owner
     print(f'Bot owner: {owner.name} (ID: {owner.id})')
-    
+
     print('==================================================')
 
 # Run bot
