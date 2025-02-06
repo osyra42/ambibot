@@ -29,9 +29,6 @@ def check_permissions():
         return wrapper
     return decorator
 
-# Apply the decorator to all slash commands
-commands.slash_command = check_permissions()(commands.slash_command)
-
 # Directory containing cogs
 cogs_dir = "cogs"
 
@@ -60,6 +57,12 @@ async def on_ready():
     print(f'Bot owner: {owner.name} (ID: {owner.id})')
 
     print('==================================================')
+
+# Example command with permission check
+@bot.slash_command()
+@check_permissions()
+async def example_command(inter: disnake.ApplicationCommandInteraction):
+    await inter.response.send_message("You have permission to use this command!")
 
 # Run bot
 if __name__ == "__main__":
