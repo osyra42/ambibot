@@ -25,10 +25,9 @@ class Music(commands.Cog):
 
         voice_channel = member.voice.channel
 
-        if not self.voice_client:
-            self.voice_client = await voice_channel.connect()
-        elif self.voice_client.channel != voice_channel:
-            await self.voice_client.move_to(voice_channel)
+        if self.voice_client:
+            await self.voice_client.disconnect()
+        self.voice_client = await voice_channel.connect()
 
         ydl_opts = {
             'format': 'bestaudio/best',
