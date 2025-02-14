@@ -2,7 +2,11 @@ import disnake
 from disnake.ext import commands
 import configparser
 import os
+import logging
 from settings import permissions  # Import permissions from settings.py
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, filename='bot.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 # Load secrets from INI file
 config = configparser.ConfigParser()
@@ -31,7 +35,7 @@ def check_permissions():
                 elif permission == "ADMINISTRATOR" and inter.user.guild_permissions.administrator:
                     has_permission = True
                     break
-            
+
             if not has_permission:
                 await inter.response.send_message("You do not have permission to use this command.", ephemeral=True)
                 return
@@ -48,25 +52,25 @@ for filename in os.listdir(cogs_dir):
         cog_name = f"{cogs_dir}.{filename[:-3]}"  # Remove '.py' and format as 'cogs.filename'
         try:
             bot.load_extension(cog_name)  # Load the cog
-            print(f"Successfully loaded '{cog_name}'")
+            logging.info(f"Successfully loaded '{cog_name}'")
         except Exception as e:
-            print(f"Failed to load '{cog_name}': {e}")
+            logging.error(f"Failed to load '{cog_name}': {e}")
 
-print("==================================================")
+logging.info("==================================================")
 
 # Event: Bot is ready
 @bot.event
 async def on_ready():
-    print("==================================================")
-    print(f'Logged in as {bot.user} (ID: {bot.user.id})')
-    print("Bot is ready and slash commands are registered.")
+    logging.info("==================================================")
+    logging.info(f'Logged in as {bot.user} (ID: {bot.user.id})')
+    logging.info("Bot is ready and slash commands are registered.")
 
     # Fetch the bot owner's information
     app_info = await bot.application_info()
     owner = app_info.owner
-    print(f'Bot owner: {owner.name} (ID: {owner.id})')
+    logging.info(f'Bot owner: {owner.name} (ID: {owner.id})')
 
-    print('==================================================')
+    logging.info('==================================================')
 
 # Example command with permission check
 @bot.slash_command()
@@ -76,4 +80,7 @@ async def example_command(inter: disnake.ApplicationCommandInteraction):
 
 # Run bot
 if __name__ == "__main__":
-    bot.run(BOT_TOKEN)
+    try:
+        bot.run(BOT_TOKEN)
+    except Exception as e:
+        logging.error(f"Failed to run bot: {e}")

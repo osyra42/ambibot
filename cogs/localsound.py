@@ -1,6 +1,10 @@
 import disnake
 from disnake.ext import commands
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, filename='localsound.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 def parse_local_sounds(base_path):
     """Parses the local sound files from the given base path."""
@@ -73,14 +77,6 @@ class LocalSound(commands.Cog):
             await inter.edit_original_response(content="There are no members in the voice channel.")
             return
 
-        # Check if there are members in the voice channel
-        if len(member.voice.channel.members) == 0:
-            await inter.response.send_message(
-                "There are no members in the voice channel.",
-                ephemeral=True
-            )
-            return
-
         # Now you can safely access voice state
         voice_channel = member.voice.channel
 
@@ -112,7 +108,7 @@ class LocalSound(commands.Cog):
             await self.voice_client.move_to(member.voice.channel)
 
         # Play the selected sound
-        if self.voice_client.is_playing():
+        if self.voice_client and self.voice_client.is_playing():
             self.voice_client.stop()
         self.voice_client.play(disnake.FFmpegPCMAudio(selected_sound['path'], options=f"-filter:a 'volume={self.volume}'"))
 

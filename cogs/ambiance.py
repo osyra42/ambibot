@@ -2,6 +2,10 @@ import disnake
 from disnake.ext import commands
 import random
 import yt_dlp
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, filename='ambiance.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 def parse_playlist(file_path):
     """
@@ -67,7 +71,7 @@ class Ambiance(commands.Cog):
 
     @commands.Cog.listener()
     async def on_button_click(self, inter: disnake.Interaction):
-        # Check if the button is a ambiance button (custom ID starts with "ambiance_")
+        # Check if the button is an ambiance button (custom ID starts with "ambiance_")
         if not inter.component.custom_id or not inter.component.custom_id.startswith("ambiance_"):
             return  # Ignore buttons that aren't ambiance-related
 
@@ -121,11 +125,12 @@ class Ambiance(commands.Cog):
                 info = ydl.extract_info(url, download=False)
                 audio_url = info['url']
         except Exception as e:
+            logging.error(f"Error fetching YouTube link: {e}")
             await inter.edit_original_response(content=f"Error fetching YouTube link: {e}")
             return
 
         # Play the audio
-        if self.voice_client.is_playing():
+        if self.voice_client and self.voice_client.is_playing():
             self.voice_client.stop()
         self.voice_client.play(disnake.FFmpegPCMAudio(audio_url, options=f"-filter:a 'volume={self.volume}'"))
 

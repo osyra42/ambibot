@@ -1,6 +1,10 @@
 import disnake
 from disnake.ext import commands
 import yt_dlp
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO, filename='music.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
 
 class Music(commands.Cog):
     def __init__(self, bot):
@@ -29,8 +33,8 @@ class Music(commands.Cog):
             if self.voice_client.channel != voice_channel:
                 await self.voice_client.disconnect()
                 self.voice_client = await voice_channel.connect()
-            else:
-                self.voice_client = await voice_channel.connect()
+        else:
+            self.voice_client = await voice_channel.connect()
 
         ydl_opts = {
             'format': 'bestaudio/best',
@@ -46,10 +50,11 @@ class Music(commands.Cog):
                 info = ydl.extract_info(url, download=False)
                 audio_url = info['url']
         except Exception as e:
+            logging.error(f"Error fetching YouTube link: {e}")
             await inter.edit_original_response(content=f"Error fetching YouTube link: {e}")
             return
 
-        if self.voice_client.is_playing():
+        if self.voice_client and self.voice_client.is_playing():
             self.voice_client.stop()
 
         self.voice_client.play(disnake.FFmpegPCMAudio(audio_url, options=f"-filter:a 'volume={self.volume}'"))
