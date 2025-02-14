@@ -41,8 +41,8 @@ class Ambiance(commands.Cog):
         self.voice_client = None
         self.volume = 0.5  # Default volume
 
-    @commands.slash_command(name="gui", description="Display buttons to play ambiance from different sections")
-    async def gui(self, inter: disnake.ApplicationCommandInteraction):
+    @commands.slash_command(name="playlist", description="Display buttons to play ambiance from different sections")
+    async def playlist(self, inter: disnake.ApplicationCommandInteraction):
         """
         Displays buttons for each section in the playlist.
         """

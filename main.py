@@ -2,6 +2,7 @@ import disnake
 from disnake.ext import commands
 import configparser
 import os
+from settings import permissions  # Import permissions from settings.py
 
 # Load secrets from INI file
 config = configparser.ConfigParser()
@@ -21,8 +22,17 @@ bot = commands.InteractionBot(intents=intents, test_guilds=GUILD_IDS)
 def check_permissions():
     def decorator(func):
         async def wrapper(inter: disnake.ApplicationCommandInteraction, *args, **kwargs):
-            # Check if the user is the owner
-            if inter.user.id != inter.guild.owner_id:
+            # Check if the user has any of the required permissions
+            has_permission = False
+            for permission in permissions:
+                if permission == "IS_OWNER" and inter.user.id == inter.guild.owner_id:
+                    has_permission = True
+                    break
+                elif permission == "ADMINISTRATOR" and inter.user.guild_permissions.administrator:
+                    has_permission = True
+                    break
+            
+            if not has_permission:
                 await inter.response.send_message("You do not have permission to use this command.", ephemeral=True)
                 return
             return await func(inter, *args, **kwargs)

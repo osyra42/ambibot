@@ -1,4 +1,5 @@
 # this is a comment and is ignored
+# up to 25 sections can be created
 
 [Battle]
 https://www.youtube.com/watch?v=OOBLHj8OQEc  ; Epic D&D Music for Battles
