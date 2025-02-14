@@ -61,16 +61,15 @@ logging.info("==================================================")
 # Event: Bot is ready
 @bot.event
 async def on_ready():
-    logging.info("==================================================")
-    logging.info(f'Logged in as {bot.user} (ID: {bot.user.id})')
-    logging.info("Bot is ready and slash commands are registered.")
-
-    # Fetch the bot owner's information
     app_info = await bot.application_info()
     owner = app_info.owner
-    logging.info(f'Bot owner: {owner.name} (ID: {owner.id})')
-
-    logging.info('==================================================')
+    launch_string = f"""==================================================
+Logged in as {bot.user} (ID: {bot.user.id})
+Bot is ready and slash commands are registered.
+Bot owner: {owner.name} (ID: {owner.id})
+=================================================="""
+    logging.info(launch_string)
+    print(launch_string)
 
 # Example command with permission check
 @bot.slash_command()

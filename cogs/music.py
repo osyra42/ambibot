@@ -22,17 +22,18 @@ class Music(commands.Cog):
             await inter.edit_original_response(content="This command can only be used in a server.")
             return
 
-        member = inter.guild.get_member(inter.user.id)
-        if not member or not member.voice:
+        # Fetch the member's voice state
+        member = inter.author  # Use inter.author to get the user who issued the command
+        if not member.voice or not member.voice.channel:
             await inter.edit_original_response(content="You need to be in a voice channel to use this!")
             return
 
         voice_channel = member.voice.channel
 
+        # Check if the bot is already connected to a voice channel
         if self.voice_client:
             if self.voice_client.channel != voice_channel:
-                await self.voice_client.disconnect()
-                self.voice_client = await voice_channel.connect()
+                await self.voice_client.move_to(voice_channel)
         else:
             self.voice_client = await voice_channel.connect()
 
@@ -59,7 +60,7 @@ class Music(commands.Cog):
 
         self.voice_client.play(disnake.FFmpegPCMAudio(audio_url, options=f"-filter:a 'volume={self.volume}'"))
 
-        embed = disnake.Embed(title="Now Playing", description=f"[Song]({url})", color=disnake.Color.green())
+        embed = disnake.Embed(title="Now Playing", description=f"{url}", color=disnake.Color.green())
         await inter.edit_original_response(embed=embed)
 
     @commands.slash_command(name="pause", description="Pause the currently playing song")
