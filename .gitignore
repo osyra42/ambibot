@@ -10,3 +10,5 @@ secrets.ini
 *.log
 launcher_log.txt
 update_log.txt
+
+*.zip
