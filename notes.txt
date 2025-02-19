@@ -1,0 +1,2 @@
+buttons color diff for each type
+interrupt audio if new sound requested
