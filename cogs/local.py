@@ -54,6 +54,7 @@ class LocalCog(commands.Cog):
                 await interaction.guild.voice_client.move_to(voice_channel)
 
             source = disnake.FFmpegPCMAudio(sound_path)
+            source = disnake.PCMVolumeTransformer(source, volume=0.2)  # Normalize audio to 0.2
             if interaction.guild.voice_client.is_playing():
                 interaction.guild.voice_client.stop()
             interaction.guild.voice_client.play(source, after=lambda e: print(f'Player error: {e}') if e else None)

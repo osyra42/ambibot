@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import configparser
+import asyncio
 from cogs.play import YTDLSource
 import yt_dlp
 import os
@@ -80,14 +81,27 @@ class ThemeCog(commands.Cog):
                 await voice_channel.connect()
             elif interaction.guild.voice_client.channel != voice_channel:
                 await interaction.guild.voice_client.move_to(voice_channel)
-            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            player = await self.retry_download(url)
+            player.volume = 0.2  # Normalize audio to 0.2
             interaction.guild.voice_client.stop()
             interaction.guild.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
             await interaction.edit_original_response(content=f'Now playing: {player.title}')
         except yt_dlp.utils.DownloadError:
             await interaction.edit_original_response(content="The video is still processing. Please try again later.")
+        except disnake.errors.Forbidden:
+            await interaction.edit_original_response(content="I don't have permission to perform this action. Please check my permissions and try again.")
         except Exception as e:
             await interaction.edit_original_response(content=f"An error occurred: {e}")
+
+    async def retry_download(self, url, retries=3, backoff_factor=0.3):
+        for attempt in range(retries):
+            try:
+                return await YTDLSource.from_url(url, loop=self.bot.loop)
+            except yt_dlp.utils.DownloadError as e:
+                if attempt < retries - 1:
+                    await asyncio.sleep(backoff_factor * (2 ** attempt))
+                else:
+                    raise e
 
 def setup(bot):
     bot.add_cog(ThemeCog(bot))
