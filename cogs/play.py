@@ -66,6 +66,7 @@ class PlayCog(commands.Cog):
             elif interaction.guild.voice_client.channel != voice_channel:
                 await interaction.guild.voice_client.move_to(voice_channel)
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            player.volume = 0.2  # Normalize audio to 0.2
             interaction.guild.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
             await interaction.edit_original_response(content=f'Now playing: {player.title}')
         except yt_dlp.utils.DownloadError:

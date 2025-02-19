@@ -82,6 +82,7 @@ class ThemeCog(commands.Cog):
             elif interaction.guild.voice_client.channel != voice_channel:
                 await interaction.guild.voice_client.move_to(voice_channel)
             player = await self.retry_download(url)
+            player.volume = 0.2  # Normalize audio to 0.2
             interaction.guild.voice_client.stop()
             interaction.guild.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
             await interaction.edit_original_response(content=f'Now playing: {player.title}')
