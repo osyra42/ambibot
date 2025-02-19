@@ -6,7 +6,7 @@ import configparser
 # Read bot token from secrets.ini
 config = configparser.ConfigParser()
 config.read('secrets.ini')
-bot_token = config.get('DISCORD', 'TOKEN')
+bot_token = config.get('bot', 'BOT_TOKEN')
 
 # Intents and Bot Initialization
 intents = disnake.Intents.default()

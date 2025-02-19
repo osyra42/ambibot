@@ -8,7 +8,7 @@ import os
 # Read guild ID from secrets.ini
 config = configparser.ConfigParser()
 config.read('secrets.ini')
-guild_id = config.get('DISCORD', 'GUILD_ID')
+guild_id = config.get('bot', 'GUILD_IDS')
 
 # Ensure the theme_songs directory exists
 theme_songs_dir = os.path.join('sounds', 'theme_songs')
