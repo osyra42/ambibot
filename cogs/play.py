@@ -7,7 +7,7 @@ import configparser
 # Read guild ID from secrets.ini
 config = configparser.ConfigParser()
 config.read('secrets.ini')
-guild_id = config.get('DISCORD', 'GUILD_ID')
+guild_id = config.get('bot', 'GUILD_IDS')
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
