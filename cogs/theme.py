@@ -1,6 +1,7 @@
 import disnake
 from disnake.ext import commands
 import configparser
+import asyncio
 from cogs.play import YTDLSource
 import yt_dlp
 import os
