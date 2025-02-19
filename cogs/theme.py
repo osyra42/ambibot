@@ -70,9 +70,10 @@ class ThemeCog(commands.Cog):
 
     async def play_url(self, interaction, url):
         try:
+            if not interaction.response.is_done():
+                await interaction.response.defer()
             voice_channel = interaction.user.voice.channel
             if not voice_channel:
-                await interaction.response.defer()
                 await interaction.edit_original_response(content="You need to be in a voice channel to use this command.")
                 return
             if interaction.guild.voice_client is None:
