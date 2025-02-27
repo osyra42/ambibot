@@ -20,7 +20,6 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0',  # Bind to ipv4
 }
 
 ffmpeg_options = {
@@ -44,7 +43,11 @@ class YTDLSource(disnake.PCMVolumeTransformer):
             # Take first item from a playlist
             data = data['entries'][0]
         filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(disnake.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+        try:
+            return cls(disnake.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+        except Exception as e:
+            print(f"Error creating audio source: {e}")
+            return None
 
 class PlayCog(commands.Cog):
     def __init__(self, bot):

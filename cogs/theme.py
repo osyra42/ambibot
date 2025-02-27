@@ -26,7 +26,6 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0',  # Bind to ipv4
 }
 
 ffmpeg_options = {
@@ -96,8 +95,17 @@ class ThemeCog(commands.Cog):
     async def retry_download(self, url, retries=3, backoff_factor=0.3):
         for attempt in range(retries):
             try:
-                return await YTDLSource.from_url(url, loop=self.bot.loop)
+                player = await YTDLSource.from_url(url, loop=self.bot.loop)
+                if player is None:
+                    raise Exception("Failed to create audio source")
+                return player
             except yt_dlp.utils.DownloadError as e:
+                if attempt < retries - 1:
+                    await asyncio.sleep(backoff_factor * (2 ** attempt))
+                else:
+                    raise e
+            except Exception as e:
+                print(f"Error creating audio source: {e}")
                 if attempt < retries - 1:
                     await asyncio.sleep(backoff_factor * (2 ** attempt))
                 else:
